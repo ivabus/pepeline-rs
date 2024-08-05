@@ -1,6 +1,6 @@
 use ndarray::Array2;
 
-use crate::utils::core::enums::TypeDot;
+use crate::core::enums::TypeDot;
 
 const X: f32 = 0.1;
 const Y: f32 = 0.15;
@@ -9,7 +9,7 @@ const Y: f32 = 0.15;
 fn math(dot_size: usize) -> (f32, (f32, f32)) {
     let point = (dot_size as f32 / 2.0 + X, dot_size as f32 / 2.0 + Y);
     let step = (1.0 - 0.5) / ((dot_size as f32).powi(2) - 1.0);
-    return (step, point);
+    (step, point)
 }
 
 fn line(x: f32, y: f32, h: f32) -> bool {
@@ -19,7 +19,7 @@ fn line(x: f32, y: f32, h: f32) -> bool {
     if gg < y {
         jj = g > y
     }
-    return jj;
+    jj
 }
 
 fn invline(x: f32, y: f32, h: f32) -> bool {
@@ -29,7 +29,7 @@ fn invline(x: f32, y: f32, h: f32) -> bool {
     if gg < y {
         jj = g > y
     }
-    return jj;
+    jj
 }
 
 fn ellipse(x: f32, y: f32, h: f32) -> bool {
@@ -85,14 +85,11 @@ fn dot_line_inv(dot_size: usize) -> Array2<f32> {
     coordinates_and_values
         .sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
 
-    let mut n = 0;
-
-    for &(i, j, _) in &coordinates_and_values {
+    for (n, &(i, j, _)) in coordinates_and_values.iter().enumerate() {
         let s = 0.5 - (step * n as f32);
         dot[[i, j]] = s;
-        n += 1;
     }
-    return dot;
+    dot
 }
 
 fn dot_invline_inv(dot_size: usize) -> Array2<f32> {
@@ -122,14 +119,11 @@ fn dot_invline_inv(dot_size: usize) -> Array2<f32> {
     coordinates_and_values
         .sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
 
-    let mut n = 0;
-
-    for &(i, j, _) in &coordinates_and_values {
+    for (n, &(i, j, _)) in coordinates_and_values.iter().enumerate() {
         let s = 0.5 - (step * n as f32);
         dot[[i, j]] = s;
-        n += 1;
     }
-    return dot;
+    dot
 }
 
 fn dot_ellipse_inv(dot_size: usize) -> Array2<f32> {
@@ -159,14 +153,11 @@ fn dot_ellipse_inv(dot_size: usize) -> Array2<f32> {
     coordinates_and_values
         .sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
 
-    let mut n = 0;
-
-    for &(i, j, _) in &coordinates_and_values {
+    for (n, &(i, j, _)) in coordinates_and_values.iter().enumerate() {
         let s = 0.5 - (step * n as f32);
         dot[[i, j]] = s;
-        n += 1;
     }
-    return dot;
+    dot
 }
 
 fn dot_cross_inv(dot_size: usize) -> Array2<f32> {
@@ -196,14 +187,11 @@ fn dot_cross_inv(dot_size: usize) -> Array2<f32> {
     coordinates_and_values
         .sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
 
-    let mut n = 0;
-
-    for &(i, j, _) in &coordinates_and_values {
+    for (n, &(i, j, _)) in coordinates_and_values.iter().enumerate() {
         let s = 0.5 - (step * n as f32);
         dot[[i, j]] = s;
-        n += 1;
     }
-    return dot;
+    dot
 }
 
 fn dot_circle_inv(dot_size: usize) -> Array2<f32> {
@@ -220,21 +208,16 @@ fn dot_circle_inv(dot_size: usize) -> Array2<f32> {
     coordinates_and_values
         .sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
 
-    let mut n = 0;
-
-    for &(i, j, _) in &coordinates_and_values {
+    for (n, &(i, j, _)) in coordinates_and_values.iter().enumerate() {
         let s = 0.5 - (step * n as f32);
         dot[[i, j]] = s;
-        n += 1;
     }
 
-    return dot;
+    dot
 }
 
 fn dot(dot_inv: Array2<f32>) -> Array2<f32> {
-    let dot = 1.0 - dot_inv;
-
-    return dot;
+    1.0 - dot_inv
 }
 
 pub fn create_dot(dot_size: usize, dot_type: TypeDot) -> (Array2<f32>, Array2<f32>) {
@@ -247,5 +230,5 @@ pub fn create_dot(dot_size: usize, dot_type: TypeDot) -> (Array2<f32>, Array2<f3
     };
     let dot = dot(dot_inv.clone());
     let dot_inv = dot_inv + 0.003;
-    return (dot, dot_inv);
+    (dot, dot_inv)
 }

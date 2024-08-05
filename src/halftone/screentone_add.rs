@@ -1,8 +1,8 @@
 use ndarray::Array2;
 
-use crate::utils::core::enums::TypeDot;
-use crate::utils::halftone::dot::create_dot;
-use crate::utils::halftone::utils_halftone::{compute_cos_sin, rotate_pixel_coordinates};
+use crate::core::enums::TypeDot;
+use crate::halftone::dot::create_dot;
+use crate::halftone::utils_halftone::{compute_cos_sin, rotate_pixel_coordinates};
 
 pub fn screentone_rotate_add(
     array: &mut Array2<f32>,

@@ -1,7 +1,4 @@
-use pyo3::pyclass;
-
 #[derive(Clone)]
-#[pyclass]
 pub enum TypeNoise {
     PERLIN = 0,
     SIMPLEX = 1,
@@ -11,7 +8,6 @@ pub enum TypeNoise {
 }
 
 #[derive(Clone)]
-#[pyclass]
 pub enum CvtType {
     RGB2Gray = 0, //NTSC
     RGB2GrayAverage = 1,
@@ -31,8 +27,7 @@ pub enum CvtType {
     RGB2Luma = 15,
 }
 
-#[pyclass]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum TypeDot {
     CIRCLE = 0,
     CROSS = 1,
@@ -40,16 +35,16 @@ pub enum TypeDot {
     LINE = 3,
     INVLINE = 4,
 }
-#[pyclass]
+
 #[derive(Clone, Copy)]
 pub enum ImgColor {
     GRAY = 0,
     RGB = 1,
-    DYNAMIC = 2
+    DYNAMIC = 2,
 }
-#[pyclass]
+
 #[derive(Clone, Copy)]
 pub enum ImgFormat {
     U8 = 0,
-    F32 = 1
+    F32 = 1,
 }

@@ -17,23 +17,20 @@ pub fn levels(
     if gamma != 1.0 && out_range != 1.0 {
         for x in vec_img.iter_mut() {
             *x = ((*x - in_low) / in_range * out_range + out_low)
-                .max(0.0)
-                .min(1.0)
+                .clamp(0.0, 1.0)
                 .powf(gamma);
         }
     } else if gamma != 1.0 {
         for x in vec_img.iter_mut() {
-            *x = ((*x - in_low) / in_range).max(0.0).min(1.0).powf(gamma);
+            *x = ((*x - in_low) / in_range).clamp(0.0, 1.0).powf(gamma);
         }
     } else if gamma == 1.0 && out_range != 1.0 {
         for x in vec_img.iter_mut() {
-            *x = ((*x - in_low) / in_range * out_range + out_low)
-                .max(0.0)
-                .min(1.0);
+            *x = ((*x - in_low) / in_range * out_range + out_low).clamp(0.0, 1.0);
         }
     } else {
         for x in vec_img.iter_mut() {
-            *x = ((*x - in_low) / in_range).max(0.0).min(1.0);
+            *x = ((*x - in_low) / in_range).clamp(0.0, 1.0);
         }
     }
 }

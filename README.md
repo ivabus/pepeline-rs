@@ -1,40 +1,37 @@
-[pypl](https://pypi.org/project/pepeline/)
-
-[git](https://github.com/scanlate-wiki/pipeline-rs)
-
-
 # pepeline-rs
-Fast rust-python librarian for internal needs of an organization
-```py
-from pepeline import screentone, fast_color_level, read, save, cvt_color, CvtType, ImgColor, ImgFormat
-img = read(<"img path">, ImgColor.GRAY, ImgFormat.F32)
-img = fast_color_level(
-    img,     
-    in_low = 10,
-    in_high = 240,
-    out_low = 0,
-    out_high = 255,
-    gamma = 1.0
-)
-img = cvt_color(img, CvtType.RGB2CMYK)
-img[:, :, 0] = screenton(img[:, :, 0], dot_size=7, angle=-15)
-img[:, :, 1] = screenton(img[:, :, 1], dot_size=7, angle=0)
-img[:, :, 2] = screenton(img[:, :, 2], dot_size=7, angle=15)
-img[:, :, 3] = screenton(img[:, :, 3], dot_size=7, angle=30)
-img = cvt_color(img, CvtType.CMYK2RGB)
-save(img, "out.png")
+
+Fork of [scanlate-wiki/pepeline-rs](https://github.com/scanlate-wiki/pipeline-rs) for pure Rust usage
+
+## Add to your project
+
 ```
-# TODO:
-- resize❓
-- documentation ♻️
-- refactoring ♻️
-- add tests ♻️
-- add benchmarks scripts ♻️
-- simd ❓
-# Function:
-- read - read img (supports psd)
-- screentone - add screenton patern.
-- fast_color_level - color levels correction
-- noise_generate - ganerate noise array
-- save - fast save image
-- cvt_color - converts color extensions, currently only supports f32 and in some places 0-1
+cargo add --git https://github.com/ivabus/pepeline-rs
+```
+
+## Examples
+
+Apply screentone
+
+```rust
+extern crate image;
+use image::{DynamicImage, GenericImageView, ImageBuffer, Luma};
+
+let img = image::open("page.png").unwrap();
+let dot_size = 8;
+let angle = 0.0;
+let dot_type = pepeline::core::enums::TypeDot::CIRCLE;
+let (w, h) = img.dimensions();
+let mut ndar = pepeline::core::convert::luma2arrayf32(img.to_luma8());
+if angle == 0.0 {
+    pepeline::halftone::screentone_add::screentone_add(&mut ndar, dot_size, dot_type);
+} else {
+    pepeline::halftone::screentone_add::screentone_rotate_add(
+        &mut ndar, dot_size, angle, dot_type,
+    );
+}
+let image = ImageBuffer::<Luma<f32>, Vec<f32>>::from_raw(w, h, ndar.into_raw_vec()).unwrap();
+DynamicImage::from(image)
+    .to_luma8()
+    .save("toned.png")
+    .unwrap();
+```

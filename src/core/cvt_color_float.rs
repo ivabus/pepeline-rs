@@ -1,5 +1,5 @@
-use crate::utils::core::cvt_constants::*;
-use crate::utils::core::enums::CvtType;
+use crate::core::cvt_constants::*;
+use crate::core::enums::CvtType;
 
 // float32
 const FLOAT_BIAS: f32 = 0.5;
@@ -41,9 +41,9 @@ fn ycbcr_to_rgb(ycbcr: &[f32], kd: f32, ke: f32, crg: f32, cbg: f32) -> [f32; 3]
     let cb = ycbcr[1] - FLOAT_BIAS;
     let cr = ycbcr[2] - FLOAT_BIAS;
     let y = ycbcr[0];
-    let r = (y + ke * cr).max(0f32).min(1f32);
-    let g = (y - crg * cr - cbg * cb).max(0f32).min(1f32);
-    let b = (y + kd * cb).max(0f32).min(1f32);
+    let r = (y + ke * cr).clamp(0f32, 1f32);
+    let g = (y - crg * cr - cbg * cb).clamp(0f32, 1f32);
+    let b = (y + kd * cb).clamp(0f32, 1f32);
     [r, g, b]
 }
 
@@ -152,7 +152,7 @@ pub fn cvt_color_float(img: &[f32], cvt_type: CvtType) -> Vec<f32> {
             ycbcr_to_rgb(x, KD_709, KE_709, KCRG_709, KCBG_709)
         }),
         CvtType::RGB2BGR | CvtType::BGR2RGB => rgb2_3ch(img, |x: &[f32]| rgb_to_bgr(x)),
-        CvtType::GRAY2RGB => gray2_3ch(img, |x| gray_to_rgb(x)),
+        CvtType::GRAY2RGB => gray2_3ch(img, gray_to_rgb),
         CvtType::RGB2Luma => rgb2gray(img, |x: &[f32]| rgb_to_luma(x)),
     }
 }
